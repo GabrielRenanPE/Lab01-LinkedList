@@ -1,78 +1,115 @@
 package test;
 
 import estruturaDeDados.ListaCircular;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ListaCircularTest {
-    public static void main(String[] args) {
-        ListaCircular listaCircular = new ListaCircular();
+import static org.junit.jupiter.api.Assertions.*;
 
-        // Testando a inserção no início
-        System.out.println("Inserindo elementos no início:");
-        listaCircular.insereInicio(10);
-        listaCircular.insereInicio(20);
-        listaCircular.insereInicio(30); // Lista circular: 30 -> 20 -> 10 -> (volta para 30)
-        exibirLista(listaCircular);
+class ListaCircularTest {
 
-        // Testando a inserção no final
-        System.out.println("Inserindo elementos no final:");
-        listaCircular.insereFim(40);
-        listaCircular.insereFim(50); // Lista circular: 30 -> 20 -> 10 -> 40 -> 50 -> (volta para 30)
-        exibirLista(listaCircular);
+    private ListaCircular listaCircular;
 
-        // Testando busca por elemento
-        System.out.println("Buscando elemento 20:");
-        System.out.println(listaCircular.buscaElemento(20) ? "Elemento encontrado!" : "Elemento não encontrado.");
-
-        System.out.println("Buscando elemento 100:");
-        System.out.println(listaCircular.buscaElemento(100) ? "Elemento encontrado!" : "Elemento não encontrado.");
-
-        // Testando busca por índice
-        System.out.println("Buscando elemento no índice 2:");
-        System.out.println("Elemento encontrado: " + listaCircular.buscaIndice(2));
-
-        System.out.println("Buscando elemento no índice 10:");
-        System.out.println("Elemento encontrado: " + listaCircular.buscaIndice(10));
-
-        // Testando remoção no início
-        System.out.println("Removendo elemento no início:");
-        listaCircular.removeInicio(); // Remove 30
-        exibirLista(listaCircular);
-
-        // Testando remoção no final
-        System.out.println("Removendo elemento no final:");
-        listaCircular.removeFim(); // Remove 50
-        exibirLista(listaCircular);
-
-        // Testando remoção por índice
-        System.out.println("Removendo elemento no índice 1:");
-        listaCircular.removeIndice(1); // Remove 10
-        exibirLista(listaCircular);
-
-        // Testando inserção em posição específica
-        System.out.println("Inserindo elemento 25 na posição 1:");
-        listaCircular.insereElementoPosicao(25, 1); // Lista circular: 20 -> 25 -> 40 -> (volta para 20)
-        exibirLista(listaCircular);
-
-        System.out.println("Inserindo elemento 5 na posição 0:");
-        listaCircular.insereElementoPosicao(5, 0); // Lista circular: 5 -> 20 -> 25 -> 40 -> (volta para 5)
-        exibirLista(listaCircular);
-
-        System.out.println("Inserindo elemento 100 na última posição:");
-        listaCircular.insereElementoPosicao(100, 4); // Lista circular: 5 -> 20 -> 25 -> 40 -> 100 -> (volta para 5)
-        exibirLista(listaCircular);
+    @BeforeEach
+    void setup() {
+        listaCircular = new ListaCircular();
     }
 
-    // Método auxiliar para exibir os elementos da lista circular
-    private static void exibirLista(ListaCircular listaCircular) {
-        System.out.println("Elementos na lista circular:");
-        for (int i = 0; i < 10; i++) { // Limita a exibição a 10 elementos para evitar loops infinitos
-            Object elemento = listaCircular.buscaIndice(i);
-            if (elemento != null) {
-                System.out.print(elemento + " -> ");
-            } else {
-                break;
-            }
-        }
-        System.out.println("(volta para o início)");
+    @Test
+    void testInsereInicio() {
+        listaCircular.insereInicio(10);
+        listaCircular.insereInicio(20);
+        listaCircular.insereInicio(30); // Lista: 30 -> 20 -> 10 -> (volta para 30)
+
+        assertEquals(30, listaCircular.buscaIndice(0));
+        assertEquals(20, listaCircular.buscaIndice(1));
+        assertEquals(10, listaCircular.buscaIndice(2));
+    }
+
+    @Test
+    void testInsereFim() {
+        listaCircular.insereFim(10);
+        listaCircular.insereFim(20);
+        listaCircular.insereFim(30); // Lista: 10 -> 20 -> 30 -> (volta para 10)
+
+        assertEquals(10, listaCircular.buscaIndice(0));
+        assertEquals(20, listaCircular.buscaIndice(1));
+        assertEquals(30, listaCircular.buscaIndice(2));
+    }
+
+    @Test
+    void testBuscaElemento() {
+        listaCircular.insereFim(10);
+        listaCircular.insereFim(20);
+        listaCircular.insereFim(30);
+
+        assertTrue(listaCircular.buscaElemento(20));
+        assertFalse(listaCircular.buscaElemento(100));
+    }
+
+    @Test
+    void testBuscaIndice() {
+        listaCircular.insereFim(10);
+        listaCircular.insereFim(20);
+        listaCircular.insereFim(30);
+
+        assertEquals(10, listaCircular.buscaIndice(0));
+        assertEquals(20, listaCircular.buscaIndice(1));
+        assertEquals(30, listaCircular.buscaIndice(2));
+        assertNull(listaCircular.buscaIndice(3)); // Índice inválido
+    }
+
+    @Test
+    void testRemoveInicio() {
+        listaCircular.insereFim(10);
+        listaCircular.insereFim(20);
+        listaCircular.insereFim(30); // Lista: 10 -> 20 -> 30 -> (volta para 10)
+
+        listaCircular.removeInicio(); // Remove 10
+        assertEquals(20, listaCircular.buscaIndice(0));
+        listaCircular.removeInicio(); // Remove 20
+        assertEquals(30, listaCircular.buscaIndice(0));
+    }
+
+    @Test
+    void testRemoveFim() {
+        listaCircular.insereFim(10);
+        listaCircular.insereFim(20);
+        listaCircular.insereFim(30); // Lista: 10 -> 20 -> 30 -> (volta para 10)
+
+        listaCircular.removeFim(); // Remove 30
+        assertNull(listaCircular.buscaIndice(2));
+        listaCircular.removeFim(); // Remove 20
+        assertEquals(10, listaCircular.buscaIndice(0));
+    }
+
+    @Test
+    void testRemoveIndice() {
+        listaCircular.insereFim(10);
+        listaCircular.insereFim(20);
+        listaCircular.insereFim(30); // Lista: 10 -> 20 -> 30 -> (volta para 10)
+
+        listaCircular.removeIndice(1); // Remove 20
+        assertEquals(30, listaCircular.buscaIndice(1));
+        listaCircular.removeIndice(0); // Remove 10
+        assertEquals(30, listaCircular.buscaIndice(0));
+    }
+
+    @Test
+    void testInsereElementoPosicao() {
+        listaCircular.insereFim(10);
+        listaCircular.insereFim(30);
+
+        listaCircular.insereElementoPosicao(20, 1); // Lista: 10 -> 20 -> 30 -> (volta para 10)
+        assertEquals(10, listaCircular.buscaIndice(0));
+        assertEquals(20, listaCircular.buscaIndice(1));
+        assertEquals(30, listaCircular.buscaIndice(2));
+
+        listaCircular.insereElementoPosicao(5, 0); // Lista: 5 -> 10 -> 20 -> 30 -> (volta para 5)
+        assertEquals(5, listaCircular.buscaIndice(0));
+        assertEquals(10, listaCircular.buscaIndice(1));
+
+        listaCircular.insereElementoPosicao(40, 4); // Lista: 5 -> 10 -> 20 -> 30 -> 40 -> (volta para 5)
+        assertEquals(40, listaCircular.buscaIndice(4));
     }
 }
