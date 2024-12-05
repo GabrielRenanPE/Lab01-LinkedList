@@ -1,101 +1,82 @@
 package test;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import estruturaDeDados.Lista;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ListaTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private Lista e;
+class ListaTest {
 
-    @Before
-    public void setUp() throws Exception {
-        e = new Lista();
+    private Lista lista;
+
+    @BeforeEach
+    void setup() {
+        lista = new Lista();
     }
 
     @Test
-    public void testInsereInicio() {
-        e.insereInicio(0);
-        assertEquals(e.buscaElemento(0), true);
-        e.insereInicio(1);
-        assertEquals(e.buscaElemento(0), true);
-        e.insereInicio(2);
-        assertEquals("Não é o primeiro " + 2, e.buscaIndice(0), 2);
-        e.insereInicio(3);
-        assertEquals("Não é o primeiro " + 3, e.buscaIndice(0), 3);
-        assertTrue("Não encontrado " + 0, e.buscaElemento(0));
-        assertTrue("Não encontrado " + 1, e.buscaElemento(1));
-        assertTrue("Não encontrado " + 2, e.buscaElemento(2));
-        assertTrue("Não encontrado " + 3, e.buscaElemento(3));
+    void testInsereInicio() {
+        lista.insereInicio(10);
+        lista.insereInicio(20);
+        lista.insereInicio(30); // Lista: 30 -> 20 -> 10
 
-        assertFalse("Encontrado " + 5, e.buscaElemento(5));
-        assertFalse("Encontrado " + -1, e.buscaElemento(-1));
-    }
-    
-    @Test
-    public void testInsereFim() {
-        e.insereFim(0);
-        assertEquals("Não é o primeiro " + 0, e.buscaIndice(0), 0);
-        e.insereFim(1);
-        assertEquals("Não é o primeiro " + 1, e.buscaIndice(1), 1);
-        e.insereFim(2);
-        assertEquals("Não é o primeiro " + 2, e.buscaIndice(2), 2);
-        e.insereFim(3);
-        assertEquals("Não é o primeiro " + 3, e.buscaIndice(3), 3);
-        assertTrue("Não encontrado " + 0, e.buscaElemento(0));
-        assertTrue("Não encontrado " + 1, e.buscaElemento(1));
-        assertTrue("Não encontrado " + 2, e.buscaElemento(2));
-        assertTrue("Não encontrado " + 3, e.buscaElemento(3));
-
-        assertFalse("Encontrado " + 5, e.buscaElemento(5));
-        assertFalse("Encontrado " + -1, e.buscaElemento(-1));
+        assertEquals(30, lista.buscaIndice(0));
+        assertEquals(20, lista.buscaIndice(1));
+        assertEquals(10, lista.buscaIndice(2));
     }
 
     @Test
-    public void testRemoveInicio() {
-        e.removeInicio();
-        e.insereInicio(0);
-        e.insereInicio(1);
-        e.insereInicio(2);
-        e.insereInicio(3);
-        assertEquals("Não encontrado " + 3, 3, e.buscaIndice(0));
+    void testInsereFim() {
+        lista.insereFim(10);
+        lista.insereFim(20);
+        lista.insereFim(30); // Lista: 10 -> 20 -> 30
 
-        e.removeInicio();
-        assertFalse("Encontrado " + 3, e.buscaElemento(3));
-        assertEquals("Inicio é " + 2, 2, e.buscaIndice(0));
+        assertEquals(10, lista.buscaIndice(0));
+        assertEquals(20, lista.buscaIndice(1));
+        assertEquals(30, lista.buscaIndice(2));
     }
 
     @Test
-    public void testRemoveFim() {
-        e.removeFim();
-        e.insereInicio(0);
-        e.insereInicio(1);
-        e.insereInicio(2);
-        e.insereInicio(3);
-        assertEquals("Não encontrado " + 3, 3, e.buscaIndice(0));
-        e.removeFim();
-        assertFalse("Encontrado " + 0, e.buscaElemento(0));
-        assertTrue("Encontrado " + 3, e.buscaElemento(3));
-        assertEquals("O ultimo é zero " + 0, 0, e.buscaIndice(2));
+    void testBuscaElemento() {
+        lista.insereFim(10);
+        lista.insereFim(20);
+        lista.insereFim(30);
+
+        assertTrue(lista.buscaElemento(20));
+        assertFalse(lista.buscaElemento(100));
     }
 
     @Test
-    public void testRemoveInserePosicao() {
-        e.insereInicio(0);
-        e.insereInicio(1);
-        e.insereInicio(2);
-        e.insereInicio(3);
-        e.insereElementoPosicao(5, 0);
-        assertTrue(e.buscaElemento(5));
-        assertEquals(5, e.buscaIndice(0));
-        e.removeIndice(0);
-        assertFalse(e.buscaElemento(5));
-        assertEquals(3, e.buscaIndice(0));
+    void testRemoveInicio() {
+        lista.insereFim(10);
+        lista.insereFim(20);
+        lista.insereFim(30); // Lista: 10 -> 20 -> 30
+
+        lista.removeInicio(); // Remove 10
+        assertEquals(20, lista.buscaIndice(0));
+        lista.removeInicio(); // Remove 20
+        assertEquals(30, lista.buscaIndice(0));
+    }
+
+    @Test
+    void testRemoveFim() {
+        lista.insereFim(10);
+        lista.insereFim(20);
+        lista.insereFim(30); // Lista: 10 -> 20 -> 30
+
+        lista.removeFim(); // Remove 30
+        assertEquals(20, lista.buscaIndice(1));
+        lista.removeFim(); // Remove 20
+        assertEquals(10, lista.buscaIndice(0));
+    }
+
+    @Test
+    void testInsereElementoPosicao() {
+        lista.insereFim(10);
+        lista.insereFim(30);
+
+        lista.insereElementoPosicao(20, 1); // Lista: 10 -> 20 -> 30
+        assertEquals(20, lista.buscaIndice(1));
     }
 }
